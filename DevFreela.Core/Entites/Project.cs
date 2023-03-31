@@ -37,5 +37,32 @@ namespace DevFreela.Core.Entites
 
         public List<ProjectComment> Comment { get; private set; }
 
+        public void Cancel()
+        {
+            if (Status != ProjectStatusEnum.Cancelled) Status = ProjectStatusEnum.Cancelled;
+        }
+        public void Start()
+        {
+            if (Status == ProjectStatusEnum.Created)
+            {
+                StartedAt = DateTime.Now;
+                Status = ProjectStatusEnum.InProgress;
+            }
+        }
+        public void Finish()
+        {
+            if (Status == ProjectStatusEnum.InProgress)
+            {
+                Status = ProjectStatusEnum.Finished;
+                StartedAt = DateTime.Now;
+            }
+        }
+        public void Update(string title, string description, decimal totalCost)
+        {
+            Title = title;
+            Description = description;
+            TotalCost = totalCost;
+        }
+
     }
 }

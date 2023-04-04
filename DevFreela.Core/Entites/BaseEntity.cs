@@ -8,12 +8,18 @@ namespace DevFreela.Core.Entites
 {
 
     //Classe abstrata você não consegue instanciala apenas para conter informações que serão reutilizadas. 
-    public abstract class BaseEntity 
+    public abstract class BaseEntity
     {
         protected BaseEntity()
         {
 
         }
         public int Id { get; private set; }
+
+        public int ObterId()
+        {
+            var IdAleatorio = new Random();
+            return Id = IdAleatorio.Next(1, 1000);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace DevFreela.Application.Services.Implementations
             return project.Id;
         }
 
-        public void CreateComment(CreatCommentInputModel creatCommentInputModel)
+        public void CreateComment(CreateCommentInputModel creatCommentInputModel)
         {
             var comment = new ProjectComment
                 (
@@ -56,13 +56,14 @@ namespace DevFreela.Application.Services.Implementations
 
         public List<ProjectViewModel> GetAll(string query)
         {
-            return _dbContext.Projects.Select(x => new ProjectViewModel(x.Id,x.Title, x.CreateAt)).ToList();
+            return _dbContext.Projects.Select(x => new ProjectViewModel(x.Id, x.Title, x.CreateAt)).ToList();
         }
 
         public ProjectDetailsViewModel GetById(int id)
         {
             var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
-            return new ProjectDetailsViewModel(project.Id, project.Title, project.Description, project.TotalCost, project.StartedAt, project.FinishedAt);
+            if (project == null) return null;
+            else return new ProjectDetailsViewModel(project.Id, project.Title, project.Description, project.TotalCost, project.StartedAt, project.FinishedAt);
         }
 
         public void Start(int id)

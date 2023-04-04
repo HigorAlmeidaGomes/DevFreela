@@ -11,8 +11,8 @@ namespace DevFreela.Infrastructure.Persistence
             Projects = new List<Project>
             {
                 new Project(1,1,"Projeto Consinco","Projeto de integração PDV SUP",1000),
-                new Project(1,1,"Projeto Missauga","Projeto de integração Homer Center",1000),
-                new Project(1,1,"Projeto 2075","Projeto de integração 2075",1000)
+                new Project(2,2,"Projeto Missauga","Projeto de integração Homer Center",1000),
+                new Project(3,3,"Projeto 2075","Projeto de integração 2075",1000)
             };
 
             Users = new List<User>

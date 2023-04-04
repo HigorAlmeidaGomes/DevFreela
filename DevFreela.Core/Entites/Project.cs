@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DevFreela.Core.Entites
 {
     public class Project : BaseEntity
     {
-        public Project(int idClient, int idFreelancer, string title, string description, decimal totalCost)
+        public Project(int idClient, int idFreelancer, string title, string description, decimal totalCost) 
         {
             IdClient = idClient;
             IdFreelancer = idFreelancer;
@@ -15,6 +16,7 @@ namespace DevFreela.Core.Entites
             CreateAt = DateTime.Now;
             Comment = new List<ProjectComment>();
             Status = ProjectStatusEnum.Created;
+            base.ObterId();
         }
 
         public int IdClient { get; private set; }

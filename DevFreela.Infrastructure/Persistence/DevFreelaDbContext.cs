@@ -1,37 +1,79 @@
 ﻿using DevFreela.Core.Entites;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevFreela.Infrastructure.Persistence
 {
-    public class DevFreelaDbContext
+    public class DevFreelaDbContext : DbContext
     {
-        public DevFreelaDbContext()
+        private const string _TB = "TB_";
+        public DevFreelaDbContext(DbContextOptions<DevFreelaDbContext> options) : base(options)
         {
-            Projects = new List<Project>
-            {
-                new Project(1,1,"Projeto Consinco","Projeto de integração PDV SUP",1000),
-                new Project(2,2,"Projeto Missauga","Projeto de integração Homer Center",1000),
-                new Project(3,3,"Projeto 2075","Projeto de integração 2075",1000)
-            };
 
-            Users = new List<User>
-            {
-                new User("Higor Almeida Gomes","higor_hag@hotmail.com", new DateTime(1994,04,11)),
-                new User("Hiago Almeida Gomes","hiago_hag@hotmail.com", new DateTime(1992,03,06)),
-                new User("Flavio Borges","flavio_borges@hotmail.com", new DateTime(1983,04,11)),
-            };
-
-            Skills = new List<Skill>
-            {
-                new Skill("Dev C#"),
-                new Skill("Adiminstrador"),
-                new Skill("Product Owner")
-            };
         }
-        public List<Project> Projects { get; set; }
-        public List<User> Users { get; set; }
-        public List<Skill> Skills { get; set; }
-        public List<ProjectComment> ProjectComments { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            #region TabelaProjectRelacionamento
+            builder.Entity<Project>()
+                .ToTable(string.Concat(_TB, nameof(Project)))
+                .HasKey(pk => pk.Id);
+
+            builder.Entity<Project>()
+                .HasOne(x => x.Freelancer)
+                .WithMany(y => y.FreelanceProjects)
+                .HasForeignKey(fk => fk.IdFreelancer)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Project>()
+                .HasOne(x => x.Client)
+                .WithMany(y => y.OwnedProjects)
+                .HasForeignKey(fk => fk.IdClient)
+                .OnDelete(DeleteBehavior.Restrict);
+            #endregion
+
+            #region TabelaUserRelacionamento
+            builder.Entity<User>()
+                .ToTable(string.Concat(_TB, nameof(User)))
+                .HasKey(t => t.Id);
+
+            builder.Entity<User>()
+                .HasMany(x => x.Skills)
+                .WithOne()
+                .HasForeignKey(x => x.IdSkill)
+                .OnDelete(DeleteBehavior.Restrict);
+            #endregion
+
+            #region TabelaProjectCommentRelacionamento
+            builder.Entity<ProjectComment>()
+                .ToTable(string.Concat(_TB, nameof(ProjectComment)))
+                .HasKey(t => t.Id);
+
+            builder.Entity<ProjectComment>()
+                .HasOne(x => x.Project)
+                .WithMany(x => x.Comment)
+                .HasForeignKey(x => x.IdProject);
+
+            builder.Entity<ProjectComment>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.ProjectComments)
+                .HasForeignKey(x => x.IdUser);
+            #endregion
+
+            #region TabelasIsoladas
+            builder.Entity<Skill>()
+            .ToTable(string.Concat(_TB, nameof(Skill)))
+            .HasKey(t => t.Id);
+
+            builder.Entity<UserSkill>()
+                .ToTable(string.Concat(_TB, nameof(UserSkill)))
+                .HasKey(t => t.Id);
+            #endregion
+
+            base.OnModelCreating(builder);
+        }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<UserSkill> UserSkills { get; set; }
+        public DbSet<ProjectComment> ProjectComments { get; set; }
     }
 }

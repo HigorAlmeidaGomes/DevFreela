@@ -16,7 +16,7 @@ namespace DevFreela.Core.Entites
             CreateAt = DateTime.Now;
             Comment = new List<ProjectComment>();
             Status = ProjectStatusEnum.Created;
-            base.ObterId();
+            //base.ObterId();
         }
 
         public int IdClient { get; private set; }

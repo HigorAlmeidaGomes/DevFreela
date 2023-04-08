@@ -5,7 +5,9 @@ using DevFreela.Core.Entites;
 using DevFreela.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace DevFreela.Application.Services.Implementations
 {
@@ -18,16 +20,35 @@ namespace DevFreela.Application.Services.Implementations
         }
         public int Create(NewProjectInputModel newProjectInputModel)
         {
-            var project = new Project
-            (
-             newProjectInputModel.IdClient,
-             newProjectInputModel.IdFreelancer,
-             newProjectInputModel.Title,
-             newProjectInputModel.Description,
-             newProjectInputModel.TotalCost
-            );
-            _dbContext.Projects.Add(project);
-            return project.Id;
+            try
+            {
+
+                var project = new Project
+                (
+                 newProjectInputModel.IdClient,
+                 newProjectInputModel.IdFreelancer,
+                 newProjectInputModel.Title,
+                 newProjectInputModel.Description,
+                 newProjectInputModel.TotalCost
+                );
+                _dbContext.Projects.Add(project);
+                _dbContext.SaveChanges();
+                return project.Id;
+            }
+            catch (Exception ex)
+            {
+                var path = Path.GetFullPath($"Erro At Create Project.txt");
+                var texto = $"{DateTime.Now} => Erro - Mensagem: {ex.Message} \r\\n\" StackTrace {ex.StackTrace}";
+                if (!File.Exists(path))
+                {
+                    File.WriteAllText(path, texto);
+                }
+                else
+                {
+                    File.AppendAllText(path, texto);
+                }
+                throw;
+            }
         }
 
         public void CreateComment(CreateCommentInputModel creatCommentInputModel)
@@ -39,6 +60,8 @@ namespace DevFreela.Application.Services.Implementations
                 creatCommentInputModel.idUser
                 );
             _dbContext.ProjectComments.Add(comment);
+            _dbContext.SaveChanges();
+
         }
 
         public void Delete(int id)
@@ -46,12 +69,16 @@ namespace DevFreela.Application.Services.Implementations
             var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
 
             project.Cancel();
+
+            _dbContext.SaveChanges();
         }
 
         public void Finish(int id)
         {
             var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
             project.Finish();
+
+            _dbContext.SaveChanges();
         }
 
         public List<ProjectViewModel> GetAll(string query)
@@ -70,6 +97,8 @@ namespace DevFreela.Application.Services.Implementations
         {
             var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
             project.Start();
+
+            _dbContext.SaveChanges();
         }
 
         public void Update(UpdateProjectInputModel updateProjectInputModel)
@@ -77,6 +106,8 @@ namespace DevFreela.Application.Services.Implementations
             var project = _dbContext.Projects.SingleOrDefault(x => x.Id == updateProjectInputModel.Id);
 
             project.Update(updateProjectInputModel.Title, updateProjectInputModel.Description, updateProjectInputModel.TotalCost);
+
+            _dbContext.SaveChanges();
         }
     }
 }

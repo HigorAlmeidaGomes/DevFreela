@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace DevFreela.Core.Entites
@@ -25,7 +26,7 @@ namespace DevFreela.Core.Entites
         public int IdFreelancer { get; private set; }
         
         public User Freelancer { get; private set; }
-
+        
         public string Title { get; private set; }
 
         public string Description { get; private set; }

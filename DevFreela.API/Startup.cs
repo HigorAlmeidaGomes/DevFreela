@@ -1,7 +1,9 @@
 using DevFreela.API.Models;
+using DevFreela.Application.Commands;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
 using DevFreela.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +30,12 @@ namespace DevFreela.API
 
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISkillService, SkillService>();
 
             services.AddControllers();
+
+            services.AddMediatR(typeof(CreateProjectCommand));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevFreela.API", Version = "v1" });

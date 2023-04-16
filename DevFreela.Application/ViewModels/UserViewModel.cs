@@ -9,11 +9,13 @@ namespace DevFreela.Application.ViewModels
 {
     public class UserViewModel
     {
-        public UserViewModel(string fullName, string email, DateTime birthDate)
+        public UserViewModel(string fullName, string email, DateTime birthDate, string skills, string ownedProjects)
         {
             FullName = fullName;
             Email = email;
             BirthDate = birthDate;
+            Skills = skills;
+            OwnedProjects = ownedProjects;
         }
 
         public string FullName { get; private set; }
@@ -22,5 +24,10 @@ namespace DevFreela.Application.ViewModels
         public DateTime BirthDate { get; private set; }
 
         public DateTime CreateAt { get; private set; }
+
+        public string Skills { get; private set; }
+
+        public string OwnedProjects { get; private set; }
+
     }
 }

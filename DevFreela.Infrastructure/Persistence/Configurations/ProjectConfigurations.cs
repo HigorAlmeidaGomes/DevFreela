@@ -19,6 +19,7 @@ namespace DevFreela.Infrastructure.Persistence.Configurations
                 .WithMany(y => y.FreelanceProjects)
                 .HasForeignKey(fk => fk.IdFreelancer)
                 .OnDelete(DeleteBehavior.Restrict);
+            
 
             builder
                 .HasOne(x => x.Client)

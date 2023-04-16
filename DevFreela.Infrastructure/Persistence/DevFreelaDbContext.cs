@@ -11,6 +11,7 @@ namespace DevFreela.Infrastructure.Persistence
         public DbSet<Skill> Skills { get; set; }
         public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<ProjectComment> ProjectComments { get; set; }
+        
         public DevFreelaDbContext(DbContextOptions<DevFreelaDbContext> options) : base(options)
         {
 

@@ -1,6 +1,8 @@
 ﻿using DevFreela.API.Models;
+using DevFreela.Application.Commands;
 using DevFreela.Application.InputModels;
 using DevFreela.Application.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -14,9 +16,11 @@ namespace DevFreela.API.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        public ProjectsController(IProjectService projectService)
+        private readonly IMediator _mediator;
+        public ProjectsController(IProjectService projectService, IMediator mediator)
         {
             _projectService = projectService;
+            _mediator = mediator;
         }
 
         // api/projects?query=net core
@@ -47,7 +51,7 @@ namespace DevFreela.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] NewProjectInputModel inputModel)
+        public async Task<IActionResult> Post([FromBody] CreateProjectCommand inputModel)
         {
             if (inputModel.Title.Length > 50)
             {
@@ -56,14 +60,13 @@ namespace DevFreela.API.Controllers
             else
             {
                 // Cadastrar o projeto
-                var id = _projectService.Create(inputModel);
+                var id = await _mediator.Send(inputModel);
                 if (id > 0)
                 {
                     return CreatedAtAction(nameof(GetById), new { id }, inputModel);
                 }
                 else { return NotFound(); }
             }
-
         }
 
         // api/projects/2

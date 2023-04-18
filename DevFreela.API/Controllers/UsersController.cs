@@ -1,9 +1,12 @@
 ﻿using DevFreela.API.Models;
+using DevFreela.Application.Commands.CommandsUser.CreateUser;
 using DevFreela.Application.InputModels;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
 {
@@ -11,9 +14,11 @@ namespace DevFreela.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly IMediator _mediator;
+        public UsersController(IUserService userService, IMediator mediator)
         {
             _userService = userService;
+            _mediator = mediator;
         }
         // api/users/1
         [HttpGet("{id}")]
@@ -39,19 +44,19 @@ namespace DevFreela.API.Controllers
 
         // api/users
         [HttpPost]
-        public IActionResult Post([FromBody] UserInputModel createUserModel)
+        public async Task<IActionResult> Post([FromBody] CreateUserCommand userCommand)
         {
-            if (string.IsNullOrEmpty(createUserModel.Email) && !string.IsNullOrEmpty(createUserModel.FullName) && createUserModel.BirthDate.Date == DateTime.Now.Date)
+            if (string.IsNullOrEmpty(userCommand.Email) && !string.IsNullOrEmpty(userCommand.FullName) && userCommand.BirthDate.Date == DateTime.Now.Date)
             {
                 return BadRequest("Dados do usuário invalido");
             }
             else
             {
                 // Cadastrar o usuário
-                var id = _userService.Create(createUserModel);
+                var id = await _mediator.Send(userCommand);
                 if (id > 0)
                 {
-                    return CreatedAtAction(nameof(GetById), new { id }, createUserModel);
+                    return CreatedAtAction(nameof(GetById), new { id }, userCommand);
                 }
                 else { return NotFound(id); }
             }

@@ -19,68 +19,6 @@ namespace DevFreela.Application.Services.Implementations
         {
             _dbContext = dbContext;
         }
-        public int Create(NewProjectInputModel newProjectInputModel)
-        {
-            try
-            {
-
-                var project = new Project
-                (
-                 newProjectInputModel.IdClient,
-                 newProjectInputModel.IdFreelancer,
-                 newProjectInputModel.Title,
-                 newProjectInputModel.Description,
-                 newProjectInputModel.TotalCost
-                );
-                _dbContext.Projects.Add(project);
-                _dbContext.SaveChanges();
-                return project.Id;
-            }
-            catch (Exception ex)
-            {
-                var path = Path.GetFullPath($"Erro At Create Project.txt");
-                var texto = $"{DateTime.Now} => Erro - Mensagem: {ex.Message} \r\\n\" StackTrace {ex.StackTrace}";
-                if (!File.Exists(path))
-                {
-                    File.WriteAllText(path, texto);
-                }
-                else
-                {
-                    File.AppendAllText(path, texto);
-                }
-                throw;
-            }
-        }
-
-        public void CreateComment(CreateCommentInputModel creatCommentInputModel)
-        {
-            var comment = new ProjectComment
-                (
-                creatCommentInputModel.content,
-                creatCommentInputModel.idProject,
-                creatCommentInputModel.idUser
-                );
-            _dbContext.ProjectComments.Add(comment);
-            _dbContext.SaveChanges();
-
-        }
-
-        public void Delete(int id)
-        {
-            var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
-
-            project.Cancel();
-
-            _dbContext.SaveChanges();
-        }
-
-        public void Finish(int id)
-        {
-            var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
-            project.Finish();
-
-            _dbContext.SaveChanges();
-        }
 
         public List<ProjectViewModel> GetAll(string query)
         {
@@ -94,7 +32,7 @@ namespace DevFreela.Application.Services.Implementations
                 .Include(p => p.Freelancer)
                 .SingleOrDefault(x => x.Id == id);
             if (project == null) return null;
-            
+
             else return new ProjectDetailsViewModel(
                 project.Id,
                 project.Title,
@@ -105,23 +43,6 @@ namespace DevFreela.Application.Services.Implementations
                 project.Client.FullName,
                 project.Freelancer.FullName);
 
-        }
-
-        public void Start(int id)
-        {
-            var project = _dbContext.Projects.SingleOrDefault(x => x.Id == id);
-            project.Start();
-
-            _dbContext.SaveChanges();
-        }
-
-        public void Update(UpdateProjectInputModel updateProjectInputModel)
-        {
-            var project = _dbContext.Projects.SingleOrDefault(x => x.Id == updateProjectInputModel.Id);
-
-            project.Update(updateProjectInputModel.Title, updateProjectInputModel.Description, updateProjectInputModel.TotalCost);
-
-            _dbContext.SaveChanges();
         }
     }
 }

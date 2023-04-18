@@ -1,13 +1,13 @@
-﻿using DevFreela.API.Models;
-using DevFreela.Application.Commands;
-using DevFreela.Application.InputModels;
+﻿using DevFreela.Application.Commands.CommandsProject.CreateComment;
+using DevFreela.Application.Commands.CommandsProject.CreateProject;
+using DevFreela.Application.Commands.CommandsProject.DeleteProject;
+using DevFreela.Application.Commands.CommandsProject.StartProject;
+using DevFreela.Application.Commands.FinishProject;
+using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
@@ -71,46 +71,40 @@ namespace DevFreela.API.Controllers
 
         // api/projects/2
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateProjectInputModel updateProjectInputModel)
+        public IActionResult Put(int id, [FromBody] UpdateProjectCommand updateProjectCommand)
         {
-            if (updateProjectInputModel.Description.Length > 200)
+            if (updateProjectCommand.Description.Length > 200)
             {
                 return BadRequest();
             }
             else
             {
                 // Atualizo o objeto
-                _projectService.Update(updateProjectInputModel);
+                _mediator.Send(updateProjectCommand);
                 return NoContent();
             }
         }
 
         // api/projects/3 DELETE
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            // Buscar, se não existir, retorna NotFound
-            var projectDelete = _projectService.GetById(id);
+            var command = new DeleteProjectCommand(id);
 
-            if (projectDelete != null)
-            {
-                // Remover 
-                _projectService.Delete(projectDelete.Id);
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
+            // Remover 
+            await _mediator.Send(command);
+
+            return NoContent();
+
         }
 
         // api/projects/1/comments POST
         [HttpPost("{id}/comments")]
-        public IActionResult PostComment(int id, [FromBody] CreateCommentInputModel createCommentInputModel)
+        public async Task<IActionResult> PostComment(int id, [FromBody] CreateProjectCommentCommand command)
         {
-            if (createCommentInputModel.idUser > 0 && createCommentInputModel.idProject > 0)
+            if (command.idUser > 0 && command.idProject > 0)
             {
-                _projectService.CreateComment(createCommentInputModel);
+                await _mediator.Send(command);
                 return NoContent();
             }
             else { return BadRequest(); }
@@ -118,9 +112,10 @@ namespace DevFreela.API.Controllers
 
         // api/projects/1/start
         [HttpPut("{id}/start")]
-        public IActionResult Start(int id)
+        public async Task<IActionResult> Start(int id)
         {
-            if (id > 0) _projectService.Start(id);
+            var command = new StartProjectCommand(id);
+            if (id > 0) await _mediator.Send(command);
             return NoContent();
         }
 
@@ -128,8 +123,13 @@ namespace DevFreela.API.Controllers
         [HttpPut("{id}/finish")]
         public IActionResult Finish(int id)
         {
-            if (id > 0) _projectService.Finish(id);
-            return NoContent();
+            var command = new FinishProjectCommand(id);
+            if (id > 0)
+            {
+                _mediator.Send(command);
+                return NoContent();
+            }
+            else return BadRequest();
         }
     }
 }

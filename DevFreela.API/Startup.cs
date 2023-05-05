@@ -1,8 +1,18 @@
 
+using DevFreela.API.Filters;
 using DevFreela.Application.Commands.CommandsProject.CreateProject;
+using DevFreela.Application.Commands.CommandsProject.DeleteProject;
+using DevFreela.Application.Commands.CommandsProject.StartProject;
+using DevFreela.Application.Commands.CommandsUser.CreateUser;
+using DevFreela.Application.Commands.FinishProject;
+using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
+using DevFreela.Application.Validators;
+using DevFreela.Core.Repositories;
 using DevFreela.Infrastructure.Persistence;
+using DevFreela.Infrastructure.Persistence.Repositories;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 
 namespace DevFreela.API
 {
@@ -28,10 +39,13 @@ namespace DevFreela.API
         {
             services.AddDbContext<DevFreelaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevFreelaCs")));
 
+            services.AddScoped<ISkillsRepository, SkillsRepository>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
 
-            services.AddControllers();
+            services.AddControllers(options => options.Filters.Add(typeof(ValidationFilter)))
+                  .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateUserCommandValidator>());
 
             services.AddMediatR(typeof(CreateProjectCommand));
 

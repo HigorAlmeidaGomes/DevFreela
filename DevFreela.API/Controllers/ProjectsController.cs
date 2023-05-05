@@ -29,7 +29,7 @@ namespace DevFreela.API.Controllers
         {
             // Buscar todos ou filtrar
             if (!String.IsNullOrEmpty(query))
-                return Ok(_projectService.GetAll(query));
+                return Ok(_projectService.GetAllAsync(query));
             else return BadRequest();
         }
 
@@ -40,7 +40,7 @@ namespace DevFreela.API.Controllers
             // Buscar o projeto
             if (id > 0)
             {
-                var projectById = _projectService.GetById(id);
+                var projectById = _projectService.GetByIdAsync(id);
                 if (projectById != null)
                 {
                     return Ok(projectById);

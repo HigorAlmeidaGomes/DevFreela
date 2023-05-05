@@ -20,12 +20,12 @@ namespace DevFreela.Application.Services.Implementations
             _dbContext = dbContext;
         }
 
-        public List<ProjectViewModel> GetAll(string query)
+        public List<ProjectViewModel> GetAllAsync(string query)
         {
             return _dbContext.Projects.Select(x => new ProjectViewModel(x.Id, x.Title, x.CreateAt)).ToList();
         }
 
-        public ProjectDetailsViewModel GetById(int id)
+        public ProjectDetailsViewModel GetByIdAsync(int id)
         {
             var project = _dbContext.Projects
                 .Include(p => p.Client)

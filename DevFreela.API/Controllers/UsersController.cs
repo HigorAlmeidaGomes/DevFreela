@@ -6,6 +6,7 @@ using DevFreela.Application.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
@@ -46,6 +47,13 @@ namespace DevFreela.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand userCommand)
         {
+            if(!ModelState.IsValid) 
+            {
+                var mensagem = ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToList();
+                return BadRequest(mensagem);
+            }
+
+
             if (string.IsNullOrEmpty(userCommand.Email) && !string.IsNullOrEmpty(userCommand.FullName) && userCommand.BirthDate.Date == DateTime.Now.Date)
             {
                 return BadRequest("Dados do usuário invalido");

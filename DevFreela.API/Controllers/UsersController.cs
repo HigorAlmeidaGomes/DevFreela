@@ -1,17 +1,16 @@
-﻿using DevFreela.API.Models;
-using DevFreela.Application.Commands.CommandsUser.CreateUser;
-using DevFreela.Application.InputModels;
-using DevFreela.Application.Services.Implementations;
+﻿using DevFreela.Application.Commands.CommandsUser.CreateUser;
+using DevFreela.Application.Commands.CommandsUser.LoginUser;
 using DevFreela.Application.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
 {
     [Route("api/users")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -45,18 +44,13 @@ namespace DevFreela.API.Controllers
 
         // api/users
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand userCommand)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 var mensagem = ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToList();
                 return BadRequest(mensagem);
-            }
-
-
-            if (string.IsNullOrEmpty(userCommand.Email) && !string.IsNullOrEmpty(userCommand.FullName) && userCommand.BirthDate.Date == DateTime.Now.Date)
-            {
-                return BadRequest("Dados do usuário invalido");
             }
             else
             {
@@ -71,10 +65,13 @@ namespace DevFreela.API.Controllers
         }
 
         // api/users/1/login
-        [HttpPut("{id}/login")]
-        public IActionResult Login(int id, [FromBody] LoginModel login)
+        [HttpPut("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
-            return NoContent();
+            var login = await _mediator.Send(command);
+
+            if (login != null) { return Ok(login); } else { return BadRequest("Erro ao gerar o token"); }
         }
     }
 }

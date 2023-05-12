@@ -14,5 +14,7 @@ namespace DevFreela.Application.Commands.CommandsUser.CreateUser
         public DateTime BirthDate { get; set; }
 
         public string Password { get; set; }
+
+        public string Role { get; set; }
     }
 }

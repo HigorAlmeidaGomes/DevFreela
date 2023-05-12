@@ -22,14 +22,14 @@ namespace DevFreela.Application.Validators
             RuleFor(x => x.BirthDate)
                 .GreaterThan(DateTime.Now)
                 .WithMessage("Data invalida");
-            RuleFor(x => x.Password)
+            RuleFor(x =>x)
                 .Must(ValidarPassword)
                 .WithMessage("Senha deve conter pelo menos 8 caracteres, um número, uma letra maiúscula, uma minúscula, e um caractere especial");
         }
-        private bool ValidarPassword(string password)
+        private bool ValidarPassword(CreateUserCommand createUserCommand)
         {
             var regex = new Regex(@"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$");
-            return regex.IsMatch(password);
+            return regex.IsMatch(createUserCommand.Password);
         }
     }
 }

@@ -1,11 +1,6 @@
 
 using DevFreela.API.Filters;
 using DevFreela.Application.Commands.CommandsProject.CreateProject;
-using DevFreela.Application.Commands.CommandsProject.DeleteProject;
-using DevFreela.Application.Commands.CommandsProject.StartProject;
-using DevFreela.Application.Commands.CommandsUser.CreateUser;
-using DevFreela.Application.Commands.FinishProject;
-using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
 using DevFreela.Application.Validators;
@@ -26,7 +21,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 

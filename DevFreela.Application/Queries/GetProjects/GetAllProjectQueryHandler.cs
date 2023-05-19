@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace DevFreela.Application.Queries.GetProjects
 {
-    public class GetAllProjectQueryHandeller : IRequestHandler<GetAllProjectQuery, List<ProjectViewModel>>
+    public class GetAllProjectQueryHandler : IRequestHandler<GetAllProjectQuery, List<ProjectViewModel>>
     {
         private readonly IProjectRepository _projectRepository;
 
-        public GetAllProjectQueryHandeller(IProjectRepository projectRepository)
+        public GetAllProjectQueryHandler(IProjectRepository projectRepository)
         {
             _projectRepository = projectRepository;
         }

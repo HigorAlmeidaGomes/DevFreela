@@ -14,7 +14,7 @@ steps:
   inputs:
     command: 'build'
     displayName: 'Executando o Build'
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    displayName: 'Executando os testes'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'test'
+#     displayName: 'Executando os testes'

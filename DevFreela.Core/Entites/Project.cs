@@ -37,7 +37,7 @@ namespace DevFreela.Core.Entites
 
         public DateTime? StartedAt { get; private set; }
 
-        public DateTime FinishedAt { get; private set; }
+        public DateTime? FinishedAt { get; private set; }
 
         public ProjectStatusEnum Status { get; private set; }
 
@@ -71,6 +71,15 @@ namespace DevFreela.Core.Entites
             Title = title;
             Description = description;
             TotalCost = totalCost;
+        }
+
+        public void Pendig()
+        {
+            if (Status == ProjectStatusEnum.InProgress)
+            {
+                Status = ProjectStatusEnum.PaymentPending;
+                FinishedAt = null;
+            }
         }
     }
 }

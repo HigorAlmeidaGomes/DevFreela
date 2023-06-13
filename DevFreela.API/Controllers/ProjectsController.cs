@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
@@ -123,15 +124,11 @@ namespace DevFreela.API.Controllers
 
         // api/projects/1/finish
         [HttpPut("{id}/finish")]
-        public IActionResult Finish(int id)
+        public async Task<IActionResult> Finish(int id, [FromBody] FinishProjectCommand command)
         {
-            var command = new FinishProjectCommand(id);
-            if (id > 0)
-            {
-                _mediator.Send(command);
-                return NoContent();
-            }
-            else return BadRequest();
+            command.Id = id;
+            var result = await _mediator.Send(command);
+            return (!result) ? BadRequest("Erro ao processar o pagamento") : NoContent();
         }
     }
 }

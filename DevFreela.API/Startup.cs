@@ -83,6 +83,8 @@ namespace DevFreela.API
                    };
                });
 
+            services.AddHttpClient();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevFreela.API", Version = "v1" });

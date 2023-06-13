@@ -59,10 +59,10 @@ namespace DevFreela.Core.Entites
 
         public void Finish()
         {
-            if (Status == ProjectStatusEnum.InProgress)
+            if (Status == ProjectStatusEnum.InProgress || Status == ProjectStatusEnum.Created)
             {
                 Status = ProjectStatusEnum.Finished;
-                StartedAt = DateTime.Now;
+                FinishedAt = DateTime.Now;
             }
         }
 
@@ -75,7 +75,7 @@ namespace DevFreela.Core.Entites
 
         public void Pendig()
         {
-            if (Status == ProjectStatusEnum.InProgress)
+            if (Status == ProjectStatusEnum.InProgress || Status == ProjectStatusEnum.Created)
             {
                 Status = ProjectStatusEnum.PaymentPending;
                 FinishedAt = null;
